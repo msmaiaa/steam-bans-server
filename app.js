@@ -53,4 +53,4 @@ require("./src/config/steam")(app);
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
 .then(() => console.log('Connected to MongoDB'))
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+app.listen(PORT, 'localhost', () => console.log(`Server listening on port ${PORT}`));
