@@ -89,6 +89,9 @@ module.exports = {
         }
     },
     fetchObservedUser: async (req,res) =>{
+        if(!req.body.data){
+            return res.status(422).send({message:'Invalid params'});
+        }
         let profile = await steam.fetchSingleProfile(req.body.data);
         if(!profile.steamid64){
             return res.status(422).send({message:'Unable to find the given profile'});
