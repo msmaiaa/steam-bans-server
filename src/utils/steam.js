@@ -6,12 +6,14 @@ let profileUrl = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v000
 let customUrl = `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${process.env.STEAM_API_KEY}&vanityurl=`;
 
 const fetchProfiles = async(docs) =>{
+    let newStatusUrl = statusUrl;
+    let newProfileUrl = profileUrl;
     for(d of docs){
-        statusUrl += d.steamid + ',';
-        profileUrl += d.steamid + ',';
+        newStatusUrl += d.steamid64 + ',';
+        newProfileUrl += d.steamid64 + ',';
     }
-    const statusResult = await axios.get(statusUrl);
-    const profilesResult = await axios.get(profileUrl);
+    const statusResult = await axios.get(newStatusUrl);
+    const profilesResult = await axios.get(newProfileUrl);
     let allProfiles = profilesResult.data.response.players;
     let allStatus = statusResult.data.players;
 
