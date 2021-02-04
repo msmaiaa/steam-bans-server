@@ -15,7 +15,6 @@ router.get("/steam/return",
       let user = req.user._json;
       let newUser = {...user, steamid64: user.steamid}
       delete newUser.steamid;
-      console.log(newUser);
       res.render("authenticated", {
         jwtToken: token,
         user: JSON.stringify(newUser),

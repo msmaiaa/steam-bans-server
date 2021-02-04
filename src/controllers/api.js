@@ -12,12 +12,15 @@ module.exports = {
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
-            const hasUser = await User.findOne({steamid: decoded.steamid}).exec();
+            const hasUser = await User.findOne({steamid64: decoded.steamid}).exec();
             if(hasUser) return res.status(300).json({message:'User already exists'});
                 
             const newUser = new User({
                 steamid64: decoded.steamid,
-                email: ''
+                sendEmail: false,
+                sendDiscord: false,
+                email: '',
+                discordHook: ''
             })
             await newUser.save();
             return res.status(200).json({message:'User created successfully'});
