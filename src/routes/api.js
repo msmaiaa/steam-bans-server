@@ -10,5 +10,6 @@ router.get('/getObservedUsersList', ApiController.getObservedUsersList);
 router.post('/createObservedUser', ApiController.createObservedUser);
 router.post('/checkObservedUser', ApiController.checkObservedUser);
 router.patch('/updateUser', ApiController.updateUser);
+router.delete('/deleteObservedUser', ApiController.deleteObservedUser);
 
 module.exports = router;

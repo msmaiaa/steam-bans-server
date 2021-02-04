@@ -20,10 +20,13 @@ const fetchProfiles = async(docs) =>{
     for(i = 0; i < allProfiles.length; i++){
         for(j = 0; j < allStatus.length; j++){
             if(allProfiles[i].steamid == allStatus[j].SteamId){
-                delete allStatus[j].SteamId;
                 Object.assign(allProfiles[i], allStatus[j]);
                 allProfiles[i].steamid64 = allProfiles[i].steamid;
+                let steamIds = await regexSteam(allProfiles[i].steamid64);
+                delete allStatus[j].SteamId;
                 delete allProfiles[i].steamid;
+                delete allProfiles[i].steamid64;
+                Object.assign(allProfiles[i], steamIds);
                 break
             }
         }

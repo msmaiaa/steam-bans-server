@@ -15,6 +15,7 @@ router.get("/steam/return",
       let user = req.user._json;
       let newUser = {...user, steamid64: user.steamid}
       delete newUser.steamid;
+      console.log(newUser);
       res.render("authenticated", {
         jwtToken: token,
         user: JSON.stringify(newUser),
@@ -30,7 +31,7 @@ router.get("/steam/token", (req,res)=>{
       return res.status(401).json({message: 'Error with authorization token'})
   }
   const newToken = jwt.sign({ user: decoded }, process.env.JWT_SECRET, {
-    expiresIn: "365d",
+    expiresIn: process.env.JWT_EXPIRES,
   });
   return res.status(200).json({user: decoded, token: newToken});
 })

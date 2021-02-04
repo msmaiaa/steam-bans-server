@@ -88,6 +88,16 @@ module.exports = {
             return res.status(404).json({message: 'Error while trying to check tracking status', error: err});
         }
     },
+    fetchProfile: async (req,res) =>{
+        if(!req.body.data){
+            return res.status(422).send({message:'Invalid params'});
+        }
+        let profile = await steam.fetchSingleProfile(req.body.data);
+        if(!profile.steamid64){
+            return res.status(422).send({message:'Unable to find the given profile'});
+        }
+        return res.status(200).send({user: profile});   
+    },
     updateUser: async (req,res) =>{
         try{
             const token = req.get('Authorization');
@@ -108,15 +118,23 @@ module.exports = {
             return res.status(404).json({message: 'Error while trying to update user', error:err});
         }
     },
-    fetchProfile: async (req,res) =>{
-        if(!req.body.data){
-            return res.status(422).send({message:'Invalid params'});
+    deleteObservedUser: async (req,res) =>{
+        try{
+            const token = req.get('Authorization');
+            const decoded = verify(token);
+    
+            if(!decoded){
+                return res.status(401).json({message: 'Error with authorization token'});
+            }else if(!req.body.steamid64){
+                return res.status(400).json({message: 'steamid64 not found'});
+            }
+            ObservedUser.deleteOne({observerId64: decoded.steamid, steamid64: req.body.steamid64}, null, (err) =>{
+                if(err) return res.status(500).json({message: 'Error while trying to remove the user from the database'});
+                return res.status(200).json({message: 'Observed user removed successfully'});
+            })
+        }catch(err){
+            return res.status(404).json({message: 'Error while trying to delete a user', error: err});
         }
-        let profile = await steam.fetchSingleProfile(req.body.data);
-        if(!profile.steamid64){
-            return res.status(422).send({message:'Unable to find the given profile'});
-        }
-        return res.status(200).send({user: profile});   
     }
 }
 
