@@ -10,7 +10,7 @@ router.get("/steam/return",
     passport.authenticate("steam", { session: false }),
     (req, res) => {
       const token = jwt.sign({ user: req.user._json }, process.env.JWT_SECRET, {
-        expiresIn: "365d",
+        expiresIn: process.env.JWT_EXPIRES,
       });
       let user = req.user._json;
       let newUser = {...user, steamid64: user.steamid}
