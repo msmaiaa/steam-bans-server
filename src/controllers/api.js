@@ -65,11 +65,13 @@ module.exports = {
                 return res.status(500).json({message: 'Error fetching observed users list'});
             }else if(!docs.length >= 1){
                 return res.status(404).json({message:'Couldnt find any observed users'});
+            }else{
+                const profiles = await steam.fetchProfiles(docs);
+                return res.status(200).json({message: 'Observed users fetched successfully', docs: profiles});
             }
-            const profiles = await steam.fetchProfiles(docs);
-            return res.status(200).json({message: 'Observed users fetched successfully', docs: profiles});
         }catch(err){
-            return res.status(404).json({message: 'Error fetching observed users list', error: err});
+            // return res.status(404).json({message: 'Error fetching observed users list', error: err});
+            return;
         }
 
     },

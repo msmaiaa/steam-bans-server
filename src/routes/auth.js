@@ -27,7 +27,7 @@ router.get("/steam/token", (req,res)=>{
   const token = req.get('Authorization');
   const decoded = verify(token);
   if(!decoded){
-      return res.status(401).json({message: 'Error with authorization token'})
+    return res.status(401).json({message: 'Error with authorization token'})
   }
   const newToken = jwt.sign({ user: decoded }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES,
