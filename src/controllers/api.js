@@ -7,8 +7,8 @@ const buildQueryParams = require("../utils/query");
 module.exports = {
     createUser: async (req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
+
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
@@ -17,9 +17,7 @@ module.exports = {
                 
             const newUser = new User({
                 steamid64: decoded.steamid,
-                sendEmail: false,
                 sendDiscord: false,
-                email: '',
                 discordHook: ''
             })
             await newUser.save();
@@ -28,10 +26,24 @@ module.exports = {
             return res.status(404).json({message:'Error while trying to create user', error: err})
         }
     },
+    getUserInfo: async(req,res) =>{
+        try{
+            const decoded = verify(req.get('Authorization'));
+
+            if(!decoded){
+                return res.status(401).json({message: 'Error with authorization token'})
+            }
+            const user = await User.findOne({steamid64: decoded.steamid}).exec();
+            if(!user) return res.status(300).json({message:'User doesnt exist'});
+            return res.status(200).json({user: user});
+        }catch(err){
+            return res.status(404).json({message:'Error while trying get user info', error: err})
+        }
+    },
     createObservedUser: async(req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
+
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
@@ -54,8 +66,7 @@ module.exports = {
     },
     getObservedUsersList: async (req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
     
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
@@ -77,8 +88,7 @@ module.exports = {
     },
     checkObservedUser: async(req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
     
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
@@ -105,12 +115,12 @@ module.exports = {
     },
     updateUser: async (req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
+
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
-            const query = {steamid: decoded.steamid};
+            const query = {steamid64: decoded.steamid};
             const params = buildQueryParams(req.body);
     
             User.findOneAndUpdate(query, params, null, (err,doc)=>{
@@ -125,8 +135,7 @@ module.exports = {
     },
     deleteObservedUser: async (req,res) =>{
         try{
-            const token = req.get('Authorization');
-            const decoded = verify(token);
+            const decoded = verify(req.get('Authorization'));
     
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'});
