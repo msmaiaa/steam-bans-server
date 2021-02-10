@@ -10,6 +10,7 @@ let log = bunyan.createLogger({name: "app"});
 
 const api = require("./src/routes/api");
 const auth = require('./src/routes/auth');
+const discord = require('./src/routes/discord');
 
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.use(cors());
 app.use(bodyparser());
 app.use('/api', api);
 app.use('/auth', auth);
+app.use('/discord', discord)
 app.use((req,res,next)=>{
     return res.status(404).send('Not found');
 })
