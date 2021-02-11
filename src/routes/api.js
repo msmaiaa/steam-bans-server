@@ -5,12 +5,12 @@ const ApiController = require("../controllers/api")
 
 router.post('/fetchProfile', ApiController.fetchProfile);
 router.use(AuthController.check_token);
-router.get('/getObservedUsersList', ApiController.getObservedUsersList);
+router.get('/getTrackedUsersList', ApiController.getTrackedUsersList);
 router.get('/getUserInfo', ApiController.getUserInfo);
 router.post('/createUser', ApiController.createUser);
-router.post('/createObservedUser', ApiController.createObservedUser);
-router.post('/checkObservedUser', ApiController.checkObservedUser);
+router.post('/createTrackedUser', ApiController.createTrackedUser);
+router.post('/checkTrackedUser', ApiController.checkTrackedUser);
 router.patch('/updateUser', ApiController.updateUser);
-router.delete('/deleteObservedUser', ApiController.deleteObservedUser);
+router.delete('/deleteTrackedUser', ApiController.deleteTrackedUser);
 
 module.exports = router;

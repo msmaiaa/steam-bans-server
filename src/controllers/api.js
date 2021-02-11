@@ -1,5 +1,5 @@
 const User = require('../models/UserModel');
-const ObservedUser = require('../models/ObservedUserModel');
+const TrackedUser = require('../models/TrackedUserModel');
 const steam = require("../utils/steam");
 const verify = require("../utils/token");
 const buildQueryParams = require("../utils/query");
@@ -40,60 +40,61 @@ module.exports = {
             return res.status(404).json({message:'Error while trying get user info', error: err})
         }
     },
-    createObservedUser: async(req,res) =>{
+    createTrackedUser: async(req,res) =>{
         try{
             const decoded = verify(req.get('Authorization'));
 
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
-            const hasObsUser = await ObservedUser.findOne({observerId64: decoded.steamid, steamid64: req.body.steamid64}).exec();
+            const hasObsUser = await TrackedUser.findOne({observerId64: decoded.steamid, steamid64: req.body.steamid64}).exec();
             if (hasObsUser) return res.status(409).json({message:'Already observing the given steamid'});
     
-            const newObsUser = new ObservedUser({
+            const newObsUser = new TrackedUser({
                 observerId64: decoded.steamid,
-                steamid64: req.body.steamid64
+                steamid64: req.body.steamid64,
+                discordSent: false
             })
             newObsUser.save((err,doc)=>{
-                if (err) return res.status(404).json({message:'Error while trying to create a new observed user'})
-                return res.status(200).json({message:'Observed user created successfully'});
+                if (err) return res.status(404).json({message:'Error while trying to create a new Tracked user'})
+                return res.status(200).json({message:'Tracked user created successfully'});
             }); 
         }catch(err){
             console.log(err);
-            return res.status(404).json({message:'Error while trying to create a new observed user', error: err});
+            return res.status(404).json({message:'Error while trying to create a new Tracked user', error: err});
         }
   
     },
-    getObservedUsersList: async (req,res) =>{
+    getTrackedUsersList: async (req,res) =>{
         try{
             const decoded = verify(req.get('Authorization'));
     
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
-            const docs = await ObservedUser.find({observerId64: decoded.steamid})
+            const docs = await TrackedUser.find({observerId64: decoded.steamid})
             if(!docs){
-                return res.status(500).json({message: 'Error fetching observed users list'});
+                return res.status(500).json({message: 'Error fetching Tracked users list'});
             }else if(!docs.length >= 1){
-                return res.status(404).json({message:'Couldnt find any observed users'});
+                return res.status(404).json({message:'Couldnt find any Tracked users'});
             }else{
                 const profiles = await steam.fetchProfiles(docs);
-                return res.status(200).json({message: 'Observed users fetched successfully', docs: profiles});
+                return res.status(200).json({message: 'Tracked users fetched successfully', docs: profiles});
             }
         }catch(err){
-            // return res.status(404).json({message: 'Error fetching observed users list', error: err});
+            // return res.status(404).json({message: 'Error fetching Tracked users list', error: err});
             return;
         }
 
     },
-    checkObservedUser: async(req,res) =>{
+    checkTrackedUser: async(req,res) =>{
         try{
             const decoded = verify(req.get('Authorization'));
     
             if(!decoded){
                 return res.status(401).json({message: 'Error with authorization token'})
             }
-            const docs = await ObservedUser.find({observerId64: decoded.steamid, steamid64: req.body.steamid64})
+            const docs = await TrackedUser.find({observerId64: decoded.steamid, steamid64: req.body.steamid64})
             if(docs.length >= 1){
                 return res.status(200).send({isObserving: true})
             }else{
@@ -133,7 +134,7 @@ module.exports = {
             return res.status(404).json({message: 'Error while trying to update user', error:err});
         }
     },
-    deleteObservedUser: async (req,res) =>{
+    deleteTrackedUser: async (req,res) =>{
         try{
             const decoded = verify(req.get('Authorization'));
     
@@ -142,9 +143,9 @@ module.exports = {
             }else if(!req.body.steamid64){
                 return res.status(400).json({message: 'steamid64 not found'});
             }
-            ObservedUser.deleteOne({observerId64: decoded.steamid, steamid64: req.body.steamid64}, null, (err) =>{
+            TrackedUser.deleteOne({observerId64: decoded.steamid, steamid64: req.body.steamid64}, null, (err) =>{
                 if(err) return res.status(500).json({message: 'Error while trying to remove the user from the database'});
-                return res.status(200).json({message: 'Observed user removed successfully'});
+                return res.status(200).json({message: 'Tracked user removed successfully'});
             })
         }catch(err){
             return res.status(404).json({message: 'Error while trying to delete a user', error: err});

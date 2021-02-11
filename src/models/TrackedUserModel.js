@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const ObservedUser = new mongoose.Schema({
+const TrackedUser = new mongoose.Schema({
     observerId64: String,
     steamid64: String,
     discordSent: Boolean,
 })
 
-module.exports = mongoose.model('ObservedUser', ObservedUser);
+module.exports = mongoose.model('TrackedUser', TrackedUser);
