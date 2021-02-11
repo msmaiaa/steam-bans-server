@@ -11,11 +11,14 @@ module.exports = {
             }else if(!req.body.discordHook){
                 return res.status(422).send({message:'Invalid params'});
             }
-            
-            testHook(req.body.discordHook);
+            const test = testHook(req.body.discordHook);
+            if(test.status === 200){
+                return res.status(200);
+            }else{
+                return res.status(500);
+            }
         }catch(err){
-            console.log(err);
-            return res.status(404).json({message:'Error while trying to test discord hook', error: err.message})
+            return res.status(500).json({message:'Error while trying to test discord hook', error: err.message})
         }
     }
 }
